@@ -1,5 +1,5 @@
 "use client";
-import NeonName from "./components/NeonName";
+import NeonName from "../components/NeonName";
 import { useState, useEffect } from "react";
 import "@fontsource/emblema-one";
 
@@ -19,7 +19,7 @@ export default function Home() {
 
   return (
     <div
-      className="bg-black min-h-screen flex flex-col items-center justify-center text-white relative"
+      className="min-h-screen flex flex-col items-center justify-center text-white relative bg-gradient-to-br from-black via-[#1a0b26] to-[#2e084c]"
       onClick={() => setClicks(clicks + 1)}
     >
       <div
