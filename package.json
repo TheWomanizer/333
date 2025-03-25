@@ -15,6 +15,7 @@
     "@fontsource/emblema-one": "^5.2.5",
     "@fontsource/teko": "^5.2.5",
     "framer-motion": "^12.5.0",
+    "gh-pages": "^6.3.0",
     "howler": "^2.2.4",
     "next": "15.2.3",
     "react": "^19.0.0",
@@ -27,5 +28,12 @@
     "@types/react-dom": "^19",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "scripts": {
+  "dev": "next dev",
+  "build": "next build",
+  "export": "next export",
+  "deploy": "yarn build && yarn export && gh-pages -d out"
+  },
+  "homepage": "https://TheWomanizer.github.io/333"
 }
