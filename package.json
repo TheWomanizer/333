@@ -5,7 +5,7 @@
   "homepage": "https://TheWomanizer.github.io/333",
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export && echo > out/.nojekyll",
+    "build": "next build && node postbuild.js",
     "start": "next start",
     "lint": "next lint"
   },
