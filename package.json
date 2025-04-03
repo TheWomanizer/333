@@ -2,11 +2,10 @@
   "name": "mi-portafolio",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://TheWomanizer.github.io/333",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "predeploy": "next build",
-    "deploy": "gh-pages -d out",
+    "build": "next build && next export && echo > out/.nojekyll",
     "start": "next start",
     "lint": "next lint"
   },
@@ -30,6 +29,5 @@
     "@types/react-dom": "^19",
     "tailwindcss": "^4",
     "typescript": "^5"
-  },
-  "homepage": "https://TheWomanizer.github.io/333"
+  }
 }
