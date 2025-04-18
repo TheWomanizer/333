@@ -25,10 +25,10 @@ export default function Menu333() {
 
   const mainLinks = [
     { name: "Proyectos", href: "/proyectos" },
-    { name: "Blogs", href: "/blogs" },
+    { name: "El Blog", href: "/blogs" },
     { name: "Sobre Mi", href: "/sobre-mi" },
     { name: "Archivos", href: "/archivos" },
-    { name: "Galeria", href: "/galeria" },
+    { name: "La Galeria", href: "/galeria" },
     { name: "Libros", href: "/libros" },
   ];
 
