@@ -25,10 +25,9 @@ jobs:
       - name: 📦 Install Dependencies
         run: npm ci
 
-      - name: 🛠️ Build and Export
+      - name: 🛠️ Build and Prepare Output
         run: |
           npm run build
-          npx next export
           echo "eskhe.com" > out/CNAME
           echo "" > out/.nojekyll
 

@@ -2,10 +2,10 @@
   "name": "mi-portafolio",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://TheWomanizer.github.io/333",
+  "homepage": "https://eskhe.com",
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node postbuild.js",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
