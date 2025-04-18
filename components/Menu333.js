@@ -1,7 +1,7 @@
-// 🔱 Menu333.js – Organización sagrada por simetría y experiencia responsiva total
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 export default function Menu333() {
   const [open, setOpen] = useState(false);
@@ -38,7 +38,10 @@ export default function Menu333() {
   return (
     <>
       {open && isCompact && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={() => setOpen(false)} />
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+          onClick={() => setOpen(false)}
+        />
       )}
 
       <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
@@ -71,39 +74,39 @@ export default function Menu333() {
                 }`}
               >
                 {isCompact && (
-                  <a
+                  <Link
                     href="/"
                     className="hover:text-purple-400 hover:scale-105 transition-transform duration-300"
                     style={{ fontFamily: "Teko, sans-serif" }}
                   >
                     Inicio
-                  </a>
+                  </Link>
                 )}
 
                 {!isCompact && (
                   <>
                     <div className="flex gap-4">
                       {left.map(({ name, href }) => (
-                        <a
+                        <Link
                           key={name}
                           href={href}
                           className="hover:text-purple-400 hover:scale-105 transition-transform duration-300"
                           style={{ fontFamily: "Teko, sans-serif" }}
                         >
                           {name}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                     <div className="flex gap-4">
                       {right.map(({ name, href }) => (
-                        <a
+                        <Link
                           key={name}
                           href={href}
                           className="hover:text-purple-400 hover:scale-105 transition-transform duration-300"
                           style={{ fontFamily: "Teko, sans-serif" }}
                         >
                           {name}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   </>

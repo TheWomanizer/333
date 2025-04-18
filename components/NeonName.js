@@ -131,20 +131,35 @@ export default function NeonName() {
   }, []);
 
   return (
-    <motion.h1
+    <motion.div
       ref={nameRef}
-      className="text-center"
+      className={`${
+        typeof window !== "undefined" && window.location.pathname !== "/"
+          ? "fixed top-4 left-4 z-50 cursor-pointer"
+          : "text-center"
+      }`}
       style={{
         fontFamily: "Caveat, cursive",
         fontStyle: "italic",
-        fontSize: `${fontSize}px`, // 🔹 Se ajusta automáticamente al tamaño correcto
+        fontSize:
+          typeof window !== "undefined" && window.location.pathname !== "/"
+            ? "clamp(16px, 2vw, 22px)"
+            : `${fontSize}px`,
         color: "#d896ff",
         textShadow:
           "0px 0px 15px #9b5de5, 0px 0px 25px #c77dff, 0px 0px 35px #f72585",
-        maxWidth: "94vw", // 🔹 Usa el 94% del ancho de la ventana
-        whiteSpace: "normal", // 🔹 Permite saltos de línea automáticos
-        textAlign: "center", // 🔹 Centrado en la pantalla
-        wordWrap: "break-word", // 🔹 Ajusta el texto si es necesario
+        maxWidth:
+          typeof window !== "undefined" && window.location.pathname !== "/"
+            ? "auto"
+            : "94vw",
+        whiteSpace: "normal",
+        textAlign: "center",
+        wordWrap: "break-word",
+      }}
+      onClick={() => {
+        if (typeof window !== "undefined" && window.location.pathname !== "/") {
+          window.location.href = "/";
+        }
       }}
     >
       {nameText.map((char, i) => (
@@ -167,6 +182,6 @@ export default function NeonName() {
           {char}
         </motion.span>
       ))}
-    </motion.h1>
-  );
+    </motion.div>
+  );  
 }
