@@ -11,23 +11,28 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repo
+      - name: 🧾 Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: 🧰 Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "20"
           cache: "npm"
 
-      - name: Install Dependencies
+      - name: 📦 Install Dependencies
         run: npm ci
 
-      - name: Build and Export
-        run: npm run build
+      - name: 🛠️ Build and Export
+        run: |
+          npm run build
+          npx next export
+          echo "eskhe.com" > out/CNAME
+          echo "" > out/.nojekyll
 
-      - name: Deploy to GitHub Pages
+      - name: 🚀 Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
