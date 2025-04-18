@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import "@fontsource/emblema-one";
 
 export default function Home() {
-  const [pageTime, setPageTime] = useState(0);
   const [interactions, setInteractions] = useState(0);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [scrolled, setScrolled] = useState(false);
@@ -14,7 +13,6 @@ export default function Home() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setPageTime((prev) => prev + 1);
       setCurrentTime(new Date());
     }, 1000);
     return () => clearInterval(interval);
@@ -30,9 +28,13 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Aumenta interacciones solo si se hace clic en elementos interactivos
   const handleInteraction = (e) => {
-    if (e.target.tagName === "BUTTON" || e.target.tagName === "A" || e.target.onclick || e.target.role === "button") {
+    if (
+      e.target.tagName === "BUTTON" ||
+      e.target.tagName === "A" ||
+      e.target.onclick ||
+      e.target.role === "button"
+    ) {
       setInteractions((prev) => prev + 1);
     }
   };
@@ -55,7 +57,7 @@ export default function Home() {
       {/* Menú 333 */}
       <Menu333 />
 
-      {/* Contenedor que controla animación del nombre */}
+      {/* Contenedor del nombre */}
       <motion.div
         ref={nameWrapperRef}
         animate={{
@@ -67,7 +69,6 @@ export default function Home() {
       >
         <NeonName />
       </motion.div>
-
-      </div>
+    </div>
   );
 }
