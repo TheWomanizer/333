@@ -64,7 +64,7 @@ export default function Menu333() {
         <motion.div
           initial={{ width: 88, borderRadius: "2rem" }}
           animate={{
-            width: open ? 444 : 88,
+            width: open ? Math.min(window.innerWidth * 0.9, 444) : 88,          
             borderRadius: open ? "1.75rem" : "2rem",
             backgroundColor: darkPurple,
             scale: open ? 1.05 : 1,

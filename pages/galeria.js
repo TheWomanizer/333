@@ -15,10 +15,10 @@ export default function Proyectos() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-white relative bg-gradient-to-br from-black via-[#000000] to-[#0c0115]">
-      {/* Título */}
+    <div className="min-h-screen flex flex-col items-center justify-center text-white relative bg-gradient-to-br from-black via-[#000000] to-[#0c0115] pt-32 sm:pt-24 px-4">
+      {/* Título responsivo */}
       <div
-        className="absolute top-4 right-6 text-purple-400 text-xl sm:text-2xl font-bold"
+        className="text-purple-400 text-xl sm:text-2xl font-bold text-center mt-4 sm:mt-0"
         style={{ fontFamily: "Emblema One, sans-serif" }}
       >
         RINCON DE FOTOGRAFIA
