@@ -5,7 +5,6 @@ import NeonName from "../components/NeonName";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import "@fontsource/emblema-one";
-import "@fontsource/inter";
 
 export default function SobreMi() {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -40,7 +39,7 @@ export default function SobreMi() {
       {/* Párrafo descriptivo */}
       <div
         className="max-w-3xl text-justify text-[clamp(14px,2.4vw,18px)] text-purple-100"
-        style={{ fontFamily: "Inter, sans-serif", lineHeight: "1.75" }}
+        style={{ fontFamily: "Dosis, sans-serif", lineHeight: "1.75" }}
       >
         <p className="mb-6">
           Nací el 28 de septiembre de 2005 en Medellín, Colombia, y desde mis primeros años comprendí que había nacido con una vocación inevitable: la de comprender y transformar el mundo a través del conocimiento. Actualmente curso el pregrado en Ingeniería de Sistemas en la Universidad EAFIT, pero sería un error reducir mi formación a los muros académicos. Mi verdadero laboratorio ha sido la vida, la red y la conciencia misma. Aunque el título está en progreso, toda mi vida me he destacado por el aprendizaje autónomo enfocado a las nuevas tecnologías, visible en los cursos certificados en LinkedIn, aunque estos no reflejan ni una fracción de mis conocimientos reales.
