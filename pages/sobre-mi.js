@@ -5,6 +5,7 @@ import NeonName from "../components/NeonName";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import "@fontsource/emblema-one";
+import "@fontsource/dosis";
 
 export default function SobreMi() {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -18,27 +19,26 @@ export default function SobreMi() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start text-white relative bg-gradient-to-b from-[#0c0115] via-black to-black overflow-x-hidden pt-36 sm:pt-28 px-6 pb-16">
-      {/* Menú 333 */}
       <Menu333 />
 
       {/* Título principal */}
-      <motion.div
-        className="text-purple-400 text-xl sm:text-2xl font-bold text-center mb-4"
-        style={{ fontFamily: "Emblema One, sans-serif" }}
+      <motion.h2
+        className="text-purple-400 text-xl sm:text-2xl font-bold text-center mb-1"
+        style={{ fontFamily: "Emblema One, sans-serif", letterSpacing: "0.05em" }}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.7 }}
       >
         MI NOMBRE ES
-      </motion.div>
+      </motion.h2>
 
-      <div className="mb-8">
+      <div className="mb-6">
         <NeonName />
       </div>
 
       {/* Párrafo descriptivo */}
       <div
-        className="max-w-3xl text-justify text-[clamp(14px,2.4vw,18px)] text-purple-100"
+        className="max-w-3xl text-justify text-[clamp(13px,2.2vw,16px)] text-purple-100"
         style={{ fontFamily: "Dosis, sans-serif", lineHeight: "1.75" }}
       >
         <p className="mb-6">
@@ -48,7 +48,7 @@ export default function SobreMi() {
           🌐 <strong>Origen autodidacta:</strong> Desde los 14 años me sumergí en las profundidades de la red. Mientras otros jugaban, yo exploraba terminales, redes privadas, VPNs, cifrado, exploits y sistemas operativos como Kali Linux y Qubes. Me formé en foros antiguos y comunidades como 4chan /g/ y canales de IRC vinculados al movimiento "Anonymous". Me alejé pronto de lo ilegal, pero conservé una ética crítica y sólida: comprender sistemas para protegerlos, mejorarlos o repensarlos.
         </p>
         <p className="mb-6">
-          🧠 <strong>Espíritu del código, alma del Ser:</strong> Mi familia es el centro de mi mundo. Practicamos la fe católica, pero yo he expandido mi espiritualidad hacia una práctica universal conectada con el Gran Arquitecto del Universo. Meditación, yoga, journaling, respiración consciente, ayuno y visualización creativa son parte de mi día a día. Para mí, programar no es solo construir con código, es crear con propósito, estética y visión trascendental. 
+          🧠 <strong>Espíritu del código, alma del Ser:</strong> Mi familia es el centro de mi mundo. Practicamos la fe católica, pero yo he expandido mi espiritualidad hacia una práctica universal conectada con el Gran Arquitecto del Universo. Meditación, yoga, journaling, respiración consciente, ayuno y visualización creativa son parte de mi día a día. Para mí, programar no es solo construir con código, es crear con propósito, estética y visión trascendental.
         </p>
         <p className="mb-6">
           👨‍💻 <strong>Dominio tecnológico:</strong> Soy desarrollador full-stack, apasionado por crear experiencias. Domino Next.js, React, TailwindCSS, Framer Motion y UX/UI emocional, combinándolos con Node.js, Python (Django/FastAPI), bases SQL/NoSQL, GraphQL, OAuth2 y AWS. Integro modelos de IA (GPT, DeepSeek, Claude), recomiendo contenido, entreno IA personalizada con LangChain, Pinecone, vector stores y más.
