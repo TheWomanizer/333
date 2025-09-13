@@ -6,12 +6,12 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { SITE_CONFIG } from "../config/content";
 import "@fontsource/emblema-one";
 import "@fontsource/dosis";
 
 export default function SobreMi() {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [showGitOptions, setShowGitOptions] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -29,7 +29,7 @@ export default function SobreMi() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.7 }}
       >
-        MI NOMBRE ES
+        {SITE_CONFIG.pages.about.title}
       </motion.h2>
 
       <div className="mb-6 w-full max-w-3xl px-4">
@@ -43,26 +43,20 @@ export default function SobreMi() {
           style={{ fontFamily: "Dosis, sans-serif", lineHeight: "1.75" }}
         >
           <p className="mb-6">
-            Nací el 28 de septiembre de 2005 en Medellín, Colombia, y desde mis primeros años comprendí que había nacido con una vocación inevitable: la de comprender y transformar el mundo a través del conocimiento. Actualmente curso el pregrado en Ingeniería de Sistemas en la Universidad EAFIT, pero sería un error reducir mi formación a los muros académicos. Mi verdadero laboratorio ha sido la vida, la red y la conciencia misma. Aunque el título está en progreso, toda mi vida me he destacado por el aprendizaje autónomo enfocado a las nuevas tecnologías, visible en los cursos certificados en LinkedIn, aunque estos no reflejan ni una fracción de mis conocimientos reales.
+            Nací el {SITE_CONFIG.personal.birthDate} en {SITE_CONFIG.personal.location}, y desde mis primeros años comprendí que había nacido con una vocación inevitable: la de comprender y transformar el mundo a través del conocimiento. Actualmente curso el pregrado en {SITE_CONFIG.personal.degree} en la {SITE_CONFIG.personal.university}, pero sería un error reducir mi formación a los muros académicos. Mi verdadero laboratorio ha sido la vida, la red y la conciencia misma. Aunque el título está en progreso, toda mi vida me he destacado por el aprendizaje autónomo enfocado a las nuevas tecnologías, visible en los cursos certificados en LinkedIn, aunque estos no reflejan ni una fracción de mis conocimientos reales.
           </p>
-          <p className="mb-6">
-            🌐 <strong>Origen autodidacta:</strong> Desde los 14 años me sumergí en las profundidades de la red. Mientras otros jugaban, yo exploraba terminales, redes privadas, VPNs, cifrado, exploits y sistemas operativos como Kali Linux y Qubes. Me formé en foros antiguos y comunidades como 4chan /g/ y canales de IRC vinculados al movimiento "Anonymous". Me alejé pronto de lo ilegal, pero conservé una ética crítica y sólida: comprender sistemas para protegerlos, mejorarlos o repensarlos.
-          </p>
-          <p className="mb-6">
-            🧠 <strong>Espíritu del código, alma del Ser:</strong> Mi familia es el centro de mi mundo. Practicamos la fe católica, pero yo he expandido mi espiritualidad hacia una práctica universal conectada con el Gran Arquitecto del Universo. Meditación, yoga, journaling, respiración consciente, ayuno y visualización creativa son parte de mi día a día. Para mí, programar no es solo construir con código, es crear con propósito, estética y visión trascendental.
-          </p>
-          <p className="mb-6">
-            👨‍💻 <strong>Dominio tecnológico:</strong> Soy desarrollador full-stack, apasionado por crear experiencias. Domino Next.js, React, TailwindCSS, Framer Motion y UX/UI emocional, combinándolos con Node.js, Python (Django/FastAPI), bases SQL/NoSQL, GraphQL, OAuth2 y AWS. Integro modelos de IA (GPT, DeepSeek, Claude), recomiendo contenido, entreno IA personalizada con LangChain, Pinecone, vector stores y más.
-          </p>
+          {SITE_CONFIG.pages.about.biography.map((section, index) => (
+            <p key={index} className="mb-6">
+              {section.emoji} <strong>{section.title}</strong> {section.content}
+            </p>
+          ))}
           <ul className="list-disc list-inside mb-6 pl-4">
-            <li>Configuración y endurecimiento de servidores Linux, Apache y NGINX.</li>
-            <li>Automatización con Bash y Python.</li>
-            <li>Control de versiones avanzado con Git y CI/CD.</li>
-            <li>Interfaces adaptadas a rendimiento, accesibilidad y diseño sensible.</li>
-            <li>Análisis semántico y procesamiento de lenguaje natural.</li>
+            {SITE_CONFIG.pages.about.skills.map((skill, index) => (
+              <li key={index}>{skill}</li>
+            ))}
           </ul>
           <p className="mb-6">
-            Todo lo que desarrollo está impregnado de simbolismo, filosofía y amor propio. Mi misión es liberar a otros del caos mediante herramientas bellas, funcionales y profundamente humanas.
+            {SITE_CONFIG.pages.about.mission}
           </p>
         </div>
 
@@ -79,37 +73,22 @@ export default function SobreMi() {
         </div>
       </div>
 
-      {/* Íconos sociales */}
-      <div className="flex items-center justify-center gap-6 mt-12">
-        <Link href="https://www.instagram.com/lll333llllll/" target="_blank">
-          <Image src="/textures/instagram.png" alt="Instagram" width={48} height={48} className="rounded-lg hover:scale-110 transition-transform" />
-        </Link>
-        <Link href="https://www.linkedin.com/in/jose-jimenez-vasquez-a388571a2/" target="_blank">
-          <Image src="/textures/linkedin.png" alt="LinkedIn" width={48} height={48} className="rounded-lg hover:scale-110 transition-transform" />
-        </Link>
-        <div className="relative">
-          <button
-            onClick={() => setShowGitOptions((prev) => !prev)}
-            className="focus:outline-none rounded-lg hover:scale-110 transition-transform"
-          >
-            <Image src="/textures/github.png" alt="GitHub" width={48} height={48} className="rounded-lg" />
-          </button>
-          {showGitOptions && (
-            <motion.div
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -5 }}
-              className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-black bg-opacity-70 border border-purple-800 rounded-lg shadow-xl p-4 space-y-2 backdrop-blur-sm"
+      {/* Redes sociales */}
+      <div className="flex items-center justify-center gap-4 mt-12">
+        {Object.entries(SITE_CONFIG.social).map(([key, social]) => (
+          <Link key={key} href={social.url} target="_blank">
+            <motion.div 
+              className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-purple-900/30 to-purple-800/30 border border-purple-700/50 rounded-xl backdrop-blur-sm hover:from-purple-800/40 hover:to-purple-700/40 hover:border-purple-600/60 transition-all duration-300"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <Link href="https://github.com/ll333ll" target="_blank" className="flex items-center justify-start gap-2 text-white hover:text-purple-400">
-                Profesional
-              </Link>
-              <Link href="https://github.com/TheWomanizer" target="_blank" className="flex items-center justify-start gap-2 text-white hover:text-purple-400">
-                Personal
-              </Link>
+              <span className="text-2xl">{social.emoji}</span>
+              <span className="text-purple-200 font-medium" style={{ fontFamily: "Dosis, sans-serif" }}>
+                {social.label}
+              </span>
             </motion.div>
-          )}
-        </div>
+          </Link>
+        ))}
       </div>
     </div>
   );
