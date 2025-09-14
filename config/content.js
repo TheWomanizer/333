@@ -11,8 +11,8 @@ export const SITE_CONFIG = {
     location: "Medellín, Colombia",
     university: "Universidad EAFIT",
     degree: "Ingeniería de Sistemas",
-    email: "tu@email.com", // Cambia por tu email real
-    phone: "+57 XXX XXX XXXX", // Cambia por tu teléfono real
+    email: "jajimenez4@eafit.edu.co",
+    phone: "+57 XXX XXX XXXX", // Cuando tenga de trabajo lo pongo
   },
 
   // ===========================
@@ -42,7 +42,7 @@ export const SITE_CONFIG = {
   pages: {
     home: {
       title: "Bienvenido",
-      subtitle: "Desarrollador Full-Stack & Místico Digital"
+      subtitle: "Insgeniero de Sistemas | Desarrollador Full-Stack | Apasionado por la IA y Dios"
     },
     about: {
       title: "MI NOMBRE ES",
@@ -56,7 +56,7 @@ export const SITE_CONFIG = {
         {
           emoji: "🧠", 
           title: "Espíritu del código, alma del Ser:",
-          content: "Mi familia es el centro de mi mundo. Practicamos la fe católica, pero yo he expandido mi espiritualidad hacia una práctica universal conectada con el Gran Arquitecto del Universo. Meditación, yoga, journaling, respiración consciente, ayuno y visualización creativa son parte de mi día a día. Para mí, programar no es solo construir con código, es crear con propósito, estética y visión trascendental."
+          content: "Mi familia es el centro de mi mundo. Con un camino que no siempre es fácil, soy cristiano con todo mi corazón, Dios es parte de mi día a día con oración, meditación, lectura y reflexión de la palabra. Para mí, programar no es solo construir con código, es crear con propósito, estética y visión trascendental."
         },
         {
           emoji: "👨‍💻",
