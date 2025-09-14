@@ -7,10 +7,3 @@ Este proyecto fue construido en **Next.js**, estilizado con **TailwindCSS**, ani
 > 🪵 Son las bases de una web que se espera mucho de si.
 
 ---
-
-## 🚀 ¿Cómo correr el proyecto localmente?
-
-```bash
-npm install
-npm run dev
-```
