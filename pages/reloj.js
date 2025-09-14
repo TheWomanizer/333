@@ -194,7 +194,7 @@ export default function ClockPage() {
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-purple-400 text-3xl font-bold mb-4" style={{ fontFamily: "Emblema One, sans-serif" }}>
-                🕐 TEMPORAL NEXUS 🕐
+                 TEMPORAL NEXUS 
               </h1>
               <p className="text-purple-200" style={{ fontFamily: "Dosis, sans-serif" }}>
                 Herramientas del tiempo y la productividad
