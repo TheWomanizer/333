@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Howl } from "howler";
 import "@fontsource/caveat/700.css";
 import "@fontsource/caveat/latin.css";
 
@@ -17,18 +16,8 @@ export default function NeonName() {
   const [glitchIndex, setGlitchIndex] = useState(null);
   const [fontSize, setFontSize] = useState(20);
   const nameRef = useRef(null);
-  const neonSoundRef = useRef(null);
 
   useEffect(() => {
-    if (!neonSoundRef.current) {
-      neonSoundRef.current = new Howl({ src: "/neon-on.mp3", volume: 0.3 });
-    }
-
-    const playSound = () => {
-      if (neonSoundRef.current.state() === "loaded") {
-        neonSoundRef.current.play();
-      }
-    };
 
     const adjustFontSize = () => {
       if (nameRef.current) {
@@ -58,7 +47,6 @@ export default function NeonName() {
     sequence.forEach((step, i) => {
       setTimeout(() => {
         setLitIndices(step);
-        if (i === sequence.length - 1) playSound();
       }, i * 2222);
     });
 
@@ -79,7 +67,6 @@ export default function NeonName() {
         sequence.forEach((step, i) => {
           setTimeout(() => {
             setLitIndices(step);
-            if (i === sequence.length - 1) playSound();
           }, i * 2222);
         });
       }, 33000);

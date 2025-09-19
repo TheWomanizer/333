@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { getAllProyectos, getProyectosByCategory, getProyectosByStatus, categorias, estados, searchProyectos } from "../data/proyectos";
+import { useGithubRepos } from "../hooks/useGithubRepos";
 import "@fontsource/emblema-one";
 import "@fontsource/dosis";
 
@@ -14,7 +15,11 @@ export default function Proyectos() {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [selectedStatus, setSelectedStatus] = useState("Todos");
   const [searchQuery, setSearchQuery] = useState("");
-  const [proyectos, setProyectos] = useState(getAllProyectos());
+  const [proyectos, setProyectos] = useState([]);
+  const [showGithubRepos, setShowGithubRepos] = useState(true);
+
+  // Hook para obtener repos de GitHub
+  const { projectsFromGithub, loading: githubLoading, error: githubError, lastUpdated } = useGithubRepos();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -24,28 +29,47 @@ export default function Proyectos() {
   }, []);
 
   useEffect(() => {
-    let filteredProjects = getAllProyectos();
-    
+    // Combinar proyectos locales con repos de GitHub
+    let allProjects = [...getAllProyectos()];
+
+    if (showGithubRepos && projectsFromGithub.length > 0) {
+      allProjects = [...allProjects, ...projectsFromGithub];
+    }
+
+    let filteredProjects = allProjects;
+
     // Filtrar por categoría
     if (selectedCategory !== "Todos") {
       filteredProjects = filteredProjects.filter(p => p.category === selectedCategory);
     }
-    
+
     // Filtrar por estado
     if (selectedStatus !== "Todos") {
       filteredProjects = filteredProjects.filter(p => p.status === selectedStatus);
     }
-    
+
     // Filtrar por búsqueda
     if (searchQuery.trim()) {
-      filteredProjects = searchProyectos(searchQuery).filter(p => 
+      const query = searchQuery.toLowerCase();
+      filteredProjects = filteredProjects.filter(p =>
+        (p.title.toLowerCase().includes(query) ||
+         p.description.toLowerCase().includes(query) ||
+         p.technologies.some(tech => tech.toLowerCase().includes(query)) ||
+         p.tags.some(tag => tag.toLowerCase().includes(query))) &&
         (selectedCategory === "Todos" || p.category === selectedCategory) &&
         (selectedStatus === "Todos" || p.status === selectedStatus)
       );
     }
-    
+
+    // Ordenar por fecha de actualización (repos de GitHub primero si están activos)
+    filteredProjects.sort((a, b) => {
+      if (a.githubData?.isFromGithub && !b.githubData?.isFromGithub) return -1;
+      if (!a.githubData?.isFromGithub && b.githubData?.isFromGithub) return 1;
+      return new Date(b.startDate) - new Date(a.startDate);
+    });
+
     setProyectos(filteredProjects);
-  }, [selectedCategory, selectedStatus, searchQuery]);
+  }, [selectedCategory, selectedStatus, searchQuery, projectsFromGithub, showGithubRepos]);
 
   const getStatusColor = (status) => {
     const colors = {
@@ -110,6 +134,36 @@ export default function Proyectos() {
             />
           </div>
 
+          {/* Toggle GitHub Repos */}
+          <div className="flex items-center gap-3">
+            <span className="text-purple-400 text-sm" style={{ fontFamily: "Dosis, sans-serif" }}>
+              Repos GitHub:
+            </span>
+            <button
+              onClick={() => setShowGithubRepos(!showGithubRepos)}
+              className={`relative w-12 h-6 rounded-full transition-colors ${
+                showGithubRepos ? 'bg-purple-600' : 'bg-purple-900/30'
+              }`}
+            >
+              <div
+                className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                  showGithubRepos ? 'translate-x-6' : 'translate-x-0'
+                }`}
+              />
+            </button>
+            {githubLoading && (
+              <div className="flex items-center gap-2 text-purple-400 text-sm">
+                <div className="w-4 h-4 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+                <span>Cargando repos...</span>
+              </div>
+            )}
+            {githubError && (
+              <div className="text-red-400 text-sm">
+                Error: {githubError}
+              </div>
+            )}
+          </div>
+
           {/* Filtros */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex flex-wrap gap-2">
@@ -170,17 +224,32 @@ export default function Proyectos() {
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">{getCategoryIcon(proyecto.category)}</span>
-                  <div>
-                    <span className={`px-3 py-1 rounded-lg text-xs border ${getStatusColor(proyecto.status)}`}>
-                      {proyecto.status}
-                    </span>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className={`px-3 py-1 rounded-lg text-xs border ${getStatusColor(proyecto.status)}`}>
+                        {proyecto.status}
+                      </span>
+                      {proyecto.githubData?.isFromGithub && (
+                        <span className="px-2 py-1 bg-gray-800 text-gray-300 text-xs rounded-lg flex items-center gap-1">
+                          <span>⚡</span>
+                          GitHub Live
+                        </span>
+                      )}
+                    </div>
+                    {proyecto.githubData?.isFromGithub && (
+                      <div className="flex items-center gap-2 text-xs text-purple-400 overflow-hidden">
+                        <span className="truncate">⭐ {proyecto.githubData.stars}</span>
+                        <span className="truncate">🍴 {proyecto.githubData.forks}</span>
+                        <span className="truncate">👁️ {proyecto.githubData.watchers}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   {proyecto.github && (
-                    <a 
-                      href={proyecto.github} 
-                      target="_blank" 
+                    <a
+                      href={proyecto.github}
+                      target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
                       className="text-purple-400 hover:text-purple-300 text-xl"
@@ -189,9 +258,9 @@ export default function Proyectos() {
                     </a>
                   )}
                   {proyecto.demo && (
-                    <a 
-                      href={proyecto.demo} 
-                      target="_blank" 
+                    <a
+                      href={proyecto.demo}
+                      target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
                       className="text-purple-400 hover:text-purple-300 text-xl"
@@ -203,22 +272,25 @@ export default function Proyectos() {
               </div>
 
               <h2
-                className="text-purple-100 text-xl font-bold mb-2"
+                className="text-purple-100 text-xl font-bold mb-2 truncate"
                 style={{ fontFamily: "Emblema One, sans-serif" }}
+                title={proyecto.title} // Mostrar título completo en hover
               >
                 {proyecto.title}
               </h2>
 
               <h3
-                className="text-purple-300 text-sm mb-3 font-medium"
+                className="text-purple-300 text-sm mb-3 font-medium truncate"
                 style={{ fontFamily: "Dosis, sans-serif" }}
+                title={proyecto.subtitle}
               >
                 {proyecto.subtitle}
               </h3>
 
               <p
-                className="text-purple-300 text-sm leading-relaxed mb-4 line-clamp-3"
+                className="text-purple-300 text-sm leading-relaxed mb-4 line-clamp-3 break-words"
                 style={{ fontFamily: "Dosis, sans-serif" }}
+                title={proyecto.description}
               >
                 {proyecto.description}
               </p>
@@ -239,14 +311,19 @@ export default function Proyectos() {
 
               {/* Tecnologías */}
               <div className="flex flex-wrap gap-2">
-                {proyecto.technologies.slice(0, 4).map((tech, i) => (
-                  <span
-                    key={i}
-                    className="text-purple-400 text-xs px-2 py-1 bg-purple-900/30 rounded-lg"
-                  >
-                    {tech}
-                  </span>
-                ))}
+                {proyecto.technologies.slice(0, 4).map((tech, i) => {
+                  // Truncar tecnologías muy largas
+                  const truncatedTech = tech.length > 12 ? tech.substring(0, 9) + '...' : tech;
+                  return (
+                    <span
+                      key={i}
+                      className="text-purple-400 text-xs px-2 py-1 bg-purple-900/30 rounded-lg"
+                      title={tech} // Mostrar nombre completo en hover
+                    >
+                      {truncatedTech}
+                    </span>
+                  );
+                })}
                 {proyecto.technologies.length > 4 && (
                   <span className="text-purple-400 text-xs px-2 py-1 bg-purple-900/30 rounded-lg">
                     +{proyecto.technologies.length - 4}

@@ -4,16 +4,38 @@ import Menu333 from "../components/Menu333";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { getAllImages, getImagesByCategory, categorias, searchImages } from "../data/galeria";
+import { useVscoGallery } from "../hooks/useVscoGallery";
 import "@fontsource/emblema-one";
 import "@fontsource/dosis";
+
+// Categorías disponibles (basadas en las que usa VSCO)
+const categorias = [
+  "Todas",
+  "Urbana",
+  "Macro",
+  "Abstracta",
+  "Conceptual",
+  "Retrato",
+  "Espiritual",
+  "Lifestyle",
+  "Nocturna"
+];
 
 export default function Galeria() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const [searchQuery, setSearchQuery] = useState("");
-  const [images, setImages] = useState(getAllImages());
+  const [images, setImages] = useState([]);
+
+  // Hook para obtener fotos de VSCO
+  const {
+    photos: vscoPhotos,
+    loading: vscoLoading,
+    error: vscoError,
+    lastUpdated,
+    refetch
+  } = useVscoGallery('micuentaprincipal');
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -23,16 +45,30 @@ export default function Galeria() {
   }, []);
 
   useEffect(() => {
-    let filteredImages = getImagesByCategory(selectedCategory);
-    
+    // Solo usar fotos de VSCO
+    let filteredImages = [...vscoPhotos];
+
+    // Filtrar por categoría
+    if (selectedCategory !== "Todas") {
+      filteredImages = filteredImages.filter(img => img.category === selectedCategory);
+    }
+
+    // Filtrar por búsqueda
     if (searchQuery.trim()) {
-      filteredImages = searchImages(searchQuery).filter(img => 
-        selectedCategory === "Todas" || img.category === selectedCategory
+      const query = searchQuery.toLowerCase();
+      filteredImages = filteredImages.filter(img =>
+        img.title.toLowerCase().includes(query) ||
+        img.description.toLowerCase().includes(query) ||
+        img.tags.some(tag => tag.toLowerCase().includes(query)) ||
+        img.location.toLowerCase().includes(query)
       );
     }
-    
+
+    // Ordenar por fecha (más recientes primero)
+    filteredImages.sort((a, b) => new Date(b.date) - new Date(a.date));
+
     setImages(filteredImages);
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, searchQuery, vscoPhotos]);
 
   const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleDateString("es-ES", {
@@ -72,16 +108,20 @@ export default function Galeria() {
             className="text-purple-400 text-3xl sm:text-4xl font-bold mb-4"
             style={{ fontFamily: "Emblema One, sans-serif", letterSpacing: "0.05em" }}
           >
-            RINCÓN DE FOTOGRAFÍA
+            GALERÍA VSCO
           </h1>
           <p className="text-purple-200 text-lg" style={{ fontFamily: "Dosis, sans-serif" }}>
-            Capturando momentos, creando eternidad
+            Mis fotos directamente desde VSCO • @micuentaprincipal
           </p>
+          <div className="flex items-center justify-center gap-2 mt-2 text-purple-400 text-sm">
+            <span>📷</span>
+            <span>Actualización automática</span>
+          </div>
         </motion.div>
 
         {/* Controles */}
         <motion.div
-          className="flex flex-col sm:flex-row gap-6 mb-12"
+          className="flex flex-col lg:flex-row gap-6 mb-12"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.8 }}
@@ -96,6 +136,39 @@ export default function Galeria() {
               className="w-full px-4 py-3 bg-purple-900/20 border border-purple-700/50 rounded-xl text-purple-100 placeholder-purple-400 focus:outline-none focus:border-purple-600 transition-colors"
               style={{ fontFamily: "Dosis, sans-serif" }}
             />
+          </div>
+
+          {/* Estado VSCO */}
+          <div className="flex items-center gap-3">
+            {vscoLoading && (
+              <div className="flex items-center gap-2 text-purple-400 text-sm">
+                <div className="w-4 h-4 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+                <span>Cargando fotos de VSCO...</span>
+              </div>
+            )}
+            {vscoError && (
+              <div className="flex items-center gap-2 text-red-400 text-sm">
+                <span>⚠️</span>
+                <span>{vscoError}</span>
+                <button
+                  onClick={() => refetch()}
+                  className="px-2 py-1 bg-red-600/20 text-red-400 rounded hover:bg-red-600/30 transition-colors"
+                >
+                  Reintentar
+                </button>
+              </div>
+            )}
+            {!vscoLoading && !vscoError && vscoPhotos.length > 0 && (
+              <div className="flex items-center gap-2 text-green-400 text-sm">
+                <span>✅</span>
+                <span>{vscoPhotos.length} fotos cargadas de VSCO</span>
+                {lastUpdated && (
+                  <span className="text-purple-400">
+                    • Actualizado: {new Date(lastUpdated).toLocaleTimeString()}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Filtros de categoría */}
@@ -134,14 +207,49 @@ export default function Galeria() {
               layout
             >
               <div className="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-purple-900/20 to-purple-800/10 border border-purple-700/30">
-                {/* Placeholder para imagen */}
-                <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-black/60 flex items-center justify-center">
-                  <div className="text-center">
-                    <span className="text-6xl mb-4 block">📸</span>
-                    <p className="text-purple-300 text-sm" style={{ fontFamily: "Dosis, sans-serif" }}>
-                      {image.title}
-                    </p>
+                {/* Imagen real de VSCO */}
+                <div className="relative w-full h-full">
+                  <img
+                    src={image.thumbnail || image.src}
+                    alt={image.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    onError={(e) => {
+                      // Fallback a placeholder si la imagen falla
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                  <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-black/60 flex items-center justify-center" style={{ display: 'none' }}>
+                    <div className="text-center">
+                      <span className="text-6xl mb-4 block">📸</span>
+                      <p className="text-purple-300 text-sm" style={{ fontFamily: "Dosis, sans-serif" }}>
+                        {image.title}
+                      </p>
+                    </div>
                   </div>
+                  {/* Badge VSCO */}
+                  <div className="absolute top-2 right-2 px-2 py-1 bg-black/70 text-white text-xs rounded-lg flex items-center gap-1">
+                    <span>📷</span>
+                    <span>VSCO</span>
+                  </div>
+                  {/* Estadísticas VSCO */}
+                  {image.vscoData && (
+                    <div className="absolute bottom-2 left-2 flex gap-2">
+                      {image.vscoData.likes > 0 && (
+                        <div className="px-2 py-1 bg-black/70 text-white text-xs rounded-lg flex items-center gap-1">
+                          <span>❤️</span>
+                          <span>{image.vscoData.likes}</span>
+                        </div>
+                      )}
+                      {image.vscoData.views > 0 && (
+                        <div className="px-2 py-1 bg-black/70 text-white text-xs rounded-lg flex items-center gap-1">
+                          <span>👁️</span>
+                          <span>{image.vscoData.views}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
                 
                 {/* Overlay con información */}
@@ -196,12 +304,24 @@ export default function Galeria() {
               <div className="flex flex-col lg:flex-row">
                 {/* Imagen */}
                 <div className="lg:w-2/3 relative aspect-square lg:aspect-video">
-                  <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-black/60 flex items-center justify-center rounded-t-2xl lg:rounded-l-2xl lg:rounded-tr-none">
-                    <div className="text-center">
-                      <span className="text-8xl mb-4 block">📸</span>
-                      <p className="text-purple-300" style={{ fontFamily: "Dosis, sans-serif" }}>
-                        {selectedImage.title}
-                      </p>
+                  <div className="relative w-full h-full">
+                    <img
+                      src={selectedImage.src}
+                      alt={selectedImage.title}
+                      className="w-full h-full object-cover rounded-t-2xl lg:rounded-l-2xl lg:rounded-tr-none"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                    <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-black/60 flex items-center justify-center rounded-t-2xl lg:rounded-l-2xl lg:rounded-tr-none" style={{ display: 'none' }}>
+                      <div className="text-center">
+                        <span className="text-8xl mb-4 block">📸</span>
+                        <p className="text-purple-300" style={{ fontFamily: "Dosis, sans-serif" }}>
+                          {selectedImage.title}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -250,6 +370,45 @@ export default function Galeria() {
                     <div className="flex items-center gap-2">
                       <span className="text-purple-400">⚙️</span>
                       <span className="text-purple-200">{selectedImage.settings}</span>
+                    </div>
+
+                    {/* Información específica de VSCO */}
+                    <div className="border-t border-purple-700/30 pt-3 mt-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-purple-400">📷</span>
+                        <span className="text-purple-200 font-medium">VSCO Data</span>
+                      </div>
+                      <div className="space-y-2 ml-6">
+                        {selectedImage.vscoData && (
+                          <>
+                            <div className="flex items-center gap-2">
+                              <span className="text-purple-400">❤️</span>
+                              <span className="text-purple-200">{selectedImage.vscoData.likes || 0} likes</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-purple-400">👁️</span>
+                              <span className="text-purple-200">{selectedImage.vscoData.views || 0} views</span>
+                            </div>
+                            {selectedImage.vscoData.filter && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-purple-400">🎨</span>
+                                <span className="text-purple-200">Filtro: {selectedImage.vscoData.filter}</span>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-2">
+                              <span className="text-purple-400">🔗</span>
+                              <a
+                                href={selectedImage.vscoData.vscoUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-purple-300 hover:text-purple-200 underline"
+                              >
+                                Ver en VSCO
+                              </a>
+                            </div>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
 

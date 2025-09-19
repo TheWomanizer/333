@@ -107,6 +107,16 @@ export default function ClockPage() {
 
   const triggerFlash = useCallback(() => {
     setIsFlashing(true);
+
+    // Reproducir alarma.mp3
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    audioRef.current = new Audio('/alarma.mp3');
+    audioRef.current.volume = 0.7;
+    audioRef.current.play().catch(console.error);
+
     let flashCount = 0;
     const flashInterval = setInterval(() => {
       flashCount++;
@@ -194,7 +204,7 @@ export default function ClockPage() {
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-purple-400 text-3xl font-bold mb-4" style={{ fontFamily: "Emblema One, sans-serif" }}>
-                🕐 TEMPORAL NEXUS 🕐
+                 TEMPORAL NEXUS 
               </h1>
               <p className="text-purple-200" style={{ fontFamily: "Dosis, sans-serif" }}>
                 Herramientas del tiempo y la productividad

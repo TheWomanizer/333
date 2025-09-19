@@ -30,12 +30,12 @@ export default function Menu333() {
 
   const mainLinks = [
     { name: "Inicio", href: "/" },
-    { name: "Blogs", href: "/blogs" },
-    { name: "Proyectos", href: "/proyectos" },
     { name: "Sobre Mi", href: "/sobre-mi" },
-    { name: "Archivos", href: "/archivos" },
-    { name: "Galeria", href: "/galeria" },
-    { name: "Libros", href: "/libros" },
+    { name: "Proyectos", href: "/proyectos" },
+    { name: "Blogs", href: "/blogs" },
+    { name: "Externos:", href: "#", external: false },
+    { name: "Galeria", href: "https://vsco.co/micuentaprincipal/gallery", external: true },
+    { name: "Libros", href: "https://www.goodreads.com/review/list/193980253-jose-jimenez", external: true },
   ];
 
   const container = {
@@ -102,19 +102,34 @@ export default function Menu333() {
               animate="visible"
               exit="hidden"
             >
-              {mainLinks.map(({ name, href }) => (
+              {mainLinks.map(({ name, href, external }) => (
                 <motion.div key={name} variants={item} className="w-full">
-                  <Link href={href} legacyBehavior>
+                  {external ? (
                     <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       onClick={() => setOpen(false)}
                       className="text-purple-200 hover:text-purple-400 transition-all duration-300 ease-in-out cursor-pointer block text-center text-[clamp(1.6rem,6.5vw,2.4rem)] px-4 tracking-wide"
                       style={{
                         textShadow: "0px 0px 4px #9333ea, 0px 0px 8px #9333ea",
                       }}
                     >
-                      {name}
+                      {name} ↗
                     </a>
-                  </Link>
+                  ) : (
+                    <Link href={href} legacyBehavior>
+                      <a
+                        onClick={() => setOpen(false)}
+                        className="text-purple-200 hover:text-purple-400 transition-all duration-300 ease-in-out cursor-pointer block text-center text-[clamp(1.6rem,6.5vw,2.4rem)] px-4 tracking-wide"
+                        style={{
+                          textShadow: "0px 0px 4px #9333ea, 0px 0px 8px #9333ea",
+                        }}
+                      >
+                        {name}
+                      </a>
+                    </Link>
+                  )}
                 </motion.div>
               ))}
               <style jsx>{`
