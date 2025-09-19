@@ -107,6 +107,16 @@ export default function ClockPage() {
 
   const triggerFlash = useCallback(() => {
     setIsFlashing(true);
+
+    // Reproducir alarma.mp3
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    audioRef.current = new Audio('/alarma.mp3');
+    audioRef.current.volume = 0.7;
+    audioRef.current.play().catch(console.error);
+
     let flashCount = 0;
     const flashInterval = setInterval(() => {
       flashCount++;
